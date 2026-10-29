@@ -24,7 +24,7 @@ from .backend import Backend, BackendError
 from .config import get_config
 from . import creativity
 from .creativity import Scope
-from .draft import deterministic_draft
+from .draft import deterministic_draft, static_camera_requested
 from .grid import canvas_for_aspect
 from .lora import resolve_loras
 from .mode import infer_mode, needs_clarification
@@ -763,6 +763,7 @@ def _written_context(brief: Brief, mode, plan, cards, n_tokens: int, style, lice
         generation_task="video editing" not in plan.task_types,
         task_types=tuple(plan.task_types),
         pinned_shots=brief.shots,
+        static_camera_requested=static_camera_requested(brief),
         declared_roles=declared, paired_audio=paired,
         standalone_audio=_standalone_audio(plan),
         audio_transcripts=_audio_transcripts(plan, cards),
@@ -1065,6 +1066,7 @@ def _assess(plan, brief: Brief, mode, opts: ProfileOptions,
         generation_task="video editing" not in plan.task_types,
         task_types=tuple(plan.task_types),
         pinned_shots=brief.shots,
+        static_camera_requested=static_camera_requested(brief),
         declared_roles=declared,
         paired_audio=paired,
         standalone_audio=_standalone_audio(plan),

@@ -291,6 +291,7 @@ class Context:
     # every caller that predates the dial gets -- including the golden controls and the independent
     # validator, neither of which knows what was asked.
     scope: Scope | None = None
+    static_camera_requested: bool = False
 
 
 def _sections(text: str, names: Iterable[str]) -> tuple[dict[str, str], list[str]]:
@@ -1728,7 +1729,9 @@ def validate(text: str, ctx: Context | None = None, **kw) -> list[Finding]:
         # little nudge can do it, don't mechanically enforce it". So the dial owns exactly one rule at
         # the top and one at the bottom (Q2), and the two middle positions are unverified by design --
         # see the asymmetry note in creativity.py before adding anything here.
-        if ctx.scope.magnitude in COMMITS_CAMERA and re.search(r"\bcamera\b", desc, re.I):
+        # An explicit held shot outranks the dial: a static camera has no speed or amplitude.
+        if (ctx.scope.magnitude in COMMITS_CAMERA and not ctx.static_camera_requested
+                and re.search(r"\bcamera\b", desc, re.I)):
             if not any(v in desc.lower() for v in MAXIMAL_CAMERA):
                 add("Q3-extreme-not-honoured", "ERROR",
                     "the creativity setting is `extreme`, which asks for the far end of the "

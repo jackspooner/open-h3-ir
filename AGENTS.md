@@ -1,5 +1,14 @@
 # Working on OpenH3-IR
 
+## Fork skill ownership
+
+This repository owns `skills/openh3-ir-compiler/`. Register that directory from the
+stable canonical checkout using `skills register ./skills --provenance 'OpenH3-IR compiler'`;
+never register a temporary worktree. Follow the shared `shared-agent-skills` procedure
+for source validation and discovery: `skills reconcile`, then `skills doctor`.
+The existing editable development install (`python -m pip install -e '.[dev]'`) is
+the worktree setup; `python -m pytest -q` and `h3ir controls` are separate verification.
+
 **This document is for changing the compiler.** Read it before changing anything. It is the set of
 rules that are not preferences, a map of which file owns what, and an honest list of what is missing.
 There is no install path here, on purpose.

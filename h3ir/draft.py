@@ -86,6 +86,29 @@ DRAFT_BEATS = ["the scene is established",
                "the action settles"]
 
 
+def static_camera_requested(brief: Brief) -> bool:
+    """Recognise direct static-camera instructions for a caller-pinned single shot.
+
+    This is deliberately not per-shot prose parsing: an automatic or multi-shot edit can
+    mix moving and held shots. Sentence starts keep a static subject or a negated request
+    from becoming camera direction; qualified or sequential instructions stay with the writer.
+    """
+    if brief.shots != 1:
+        return False
+    for text in (brief.intent, *brief.constraints):
+        for sentence in re.split(r"[.!?;\n]+", text):
+            if re.search(r"\b(?:not|never|avoid|instead|then|before|after|until)\b", sentence, re.I):
+                continue
+            if re.match(
+                r"\s*(?:(?:(?:a|one|single)\s+)?(?:continuous\s+)?static\s+"
+                r"(?:(?:medium|wide|close[- ]up)\s+)?(?:shot|camera)\b"
+                r"|(?:keep\s+)?(?:the\s+)?camera\s+(?:(?:is|remains|stays)\s+)?static\b)",
+                sentence, re.I,
+            ):
+                return True
+    return False
+
+
 def _style_from_cards(brief: Brief, cards: dict[str, AssetCard]) -> str:
     """Delegates to the shared resolver. The draft and the enriched path must not have separate
     opinions about style -- the draft is the fallback, and a fallback that renders a different
@@ -207,6 +230,8 @@ def deterministic_draft(brief: Brief, mode: Mode, cards: dict[str, AssetCard], *
 
     from .creativity import MAGNITUDE, parse
     rotation = draft_camera(MAGNITUDE[parse(brief.creativity)])
+    if static_camera_requested(brief):
+        rotation = [{"type": "Static Shot", "amplitude": None, "speed": None}]
 
     beats: list[dict[str, Any]] = []
     for i, _ in enumerate(skeleton.shots):

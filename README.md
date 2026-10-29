@@ -2,6 +2,26 @@
 
 Open-source local Context-IR for MiniMax H3.
 
+This is the [jackspooner fork](https://github.com/jackspooner/open-h3-ir) of
+[ruashots/OpenH3-IR](https://github.com/ruashots/open-h3-ir). The upstream explanation,
+examples and Apache-2.0 licensing below are preserved; see the
+[upstream README](https://github.com/ruashots/open-h3-ir/blob/main/README.md).
+
+Our fork makes explicit static-camera instructions override the draft camera rotation
+when the caller pins `shots: 1`. For example, `One continuous static medium shot of
+the person in the reference.` now produces `Static Shot` metadata with no amplitude
+or speed, including on the write-first path. Direct sentence-start instructions such
+as `Keep the camera static.` also work in intent or constraints. The caller's camera
+direction outranks the legacy extreme creativity setting.
+
+This is a bounded English instruction recognizer, not general camera-plan extraction:
+automatic/multi-shot edits, negated or sequential camera directions keep the existing
+rotation. Written prose remains independently composed; this fix does not establish
+general parity between prose and the retained draft plan. Offline regressions cover
+the reference/dialogue request; live inference and service activation are separate.
+Install and checks retain the upstream procedure below. Agent operating guidance is
+in [skills/openh3-ir-compiler](skills/openh3-ir-compiler/SKILL.md).
+
 [![tests](https://github.com/ruashots/open-h3-ir/actions/workflows/ci.yml/badge.svg)](https://github.com/ruashots/open-h3-ir/actions/workflows/ci.yml)
 
 **Write one prompt. Get better video out of MiniMax H3.**

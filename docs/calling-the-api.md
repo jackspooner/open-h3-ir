@@ -10,6 +10,24 @@ pack, and [`h3ir_client.py`](https://github.com/ruashots/ComfyUI-OpenH3-IR/blob/
 consumed over the standard library alone, with every failure branch below turned into a sentence for a
 person to read.
 
+When a response has `status: "needs_input"`, show `question.ask` and its typed
+`options`, retaining the original request and asset hashes. Submit the same inputs
+with `answer: {"anchor_or_reference": "opening_frame"}` to pin the first image,
+or `answer: {"anchor_or_reference": "appears_in"}` to make images content references.
+These choices become explicit roles, so anchor wording does not ask the same
+question again. The reported default is informational; callers choose whether to
+accept it. This is a new compilation and may run inference. It is not a recovery
+mechanism for a submission whose outcome is unknown.
+
+For a render handoff retain `ir.prompt`, `mode`, `target`, `manifest` and
+`render_hash` together. `target.canvas` is the compiler-selected geometry;
+`nominal_seconds` is the ask while `frames / 24` is the effective duration.
+Slots are zero-based emission order. Paired audio precedes its video and uses
+`ref_video_audio_N`; standalone audio sockets have their own counter even though
+`<Audio N>` labels count both groups. Reference sizing and pairing must survive
+any adapter. This mechanical handoff does not establish prose/plan parity or
+render quality.
+
 ## In one line
 
 You send a plain-language request and some files. You get back a validated H3 brief **and the asset

@@ -22,6 +22,14 @@ Compilation normally calls the configured language/vision backend; even `llm=Fal
 can analyze assets. Offline tests must stub analysis and the backend explicitly.
 Do not treat draft fallback as successful written enrichment or silently change models.
 
+On `needs_input`, retain `question`, its options/default and the original request.
+Send that request again with `answer: {"anchor_or_reference": "opening_frame"}`
+or `"appears_in"`. The first choice pins the first image; the second explicitly
+treats images as content references. Preserve asset hashes/order and other inputs.
+Answering performs a new compile; never use this as recovery from an uncertain
+submission. Keep `ir.mode`, `target` (canvas, nominal/effective duration, frames),
+`manifest` (slots, sizing, pairing, wiring) and `render_hash` with the prompt.
+
 For a static single shot, pin `shots: 1` and state a direct sentence such as
 `One continuous static medium shot of the person in the reference.` or
 `Keep the camera static.` in intent/constraints. The draft selects `Static Shot`

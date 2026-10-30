@@ -321,8 +321,16 @@ def _to_brief(b: BriefIn) -> Brief:
 
     # An answered clarification becomes an explicit role, which is exactly how it would have
     # arrived had the caller known: the answer is data, not a special code path.
-    if b.answer and b.answer.get("anchor_or_reference") == "opening_frame" and assets:
-        assets[0].role = Role.FRAME_ANCHOR_FIRST
+    images = [a for a in assets if a.kind is AssetKind.IMAGE]
+    if b.answer and images:
+        answer = b.answer.get("anchor_or_reference")
+        if answer == "opening_frame":
+            images[0].role = Role.FRAME_ANCHOR_FIRST
+            images[0].role_stated = True
+        elif answer == "appears_in":
+            for image in images:
+                image.role = Role.SUBJECT
+                image.role_stated = True
 
     return Brief(intent=b.intent, assets=assets, seconds=b.seconds, aspect=b.aspect,
                  megapixels=b.megapixels,

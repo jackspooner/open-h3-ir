@@ -14,6 +14,12 @@ or speed, including on the write-first path. Direct sentence-start instructions 
 as `Keep the camera static.` also work in intent or constraints. The caller's camera
 direction outranks the legacy extreme creativity setting.
 
+The fork also applies both published clarification answers as explicit image roles:
+`opening_frame` selects the first image (even if an audio asset precedes it), and
+`appears_in` makes the images content references. Source hashes stay unchanged.
+Resubmit the retained brief input with the chosen `answer` after `needs_input`;
+this is a new compile, not an automatic retry of an uncertain operation.
+
 This is a bounded English instruction recognizer, not general camera-plan extraction:
 automatic/multi-shot edits, negated or sequential camera directions keep the existing
 rotation. Written prose remains independently composed; this fix does not establish
